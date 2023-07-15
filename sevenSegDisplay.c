@@ -1,11 +1,11 @@
 #include "sevenSegDisplay.h"
 
-
-Pin a = P1B;
-Pin b = P1C;
+// 1 2 4 6 7 9 10 3 3'
+Pin a = PF5;
+Pin b = P43;
 Pin c = PF7;
-Pin d = P43;
-Pin e = PF5;
+Pin d = P1C;
+Pin e = P1B;
 Pin f = P44;
 Pin g = P45;
 Pin enable1 = PF3;
@@ -14,12 +14,26 @@ Pin enable3 = PF1;
 
 
 void init7segDisplays() {
-	Pin pins[] = {a, b, c, d, e, f, g, enable1, enable2, enable3};
-	int i = 0;
-	for (i = 0; i < 10; i++) {
-		gpio_set_mode(pins[i], Output);
-		gpio_set(pins[i], ((i < 7) ? (HIGH) : (LOW)));
-	}
+	gpio_set_mode(a, Output);
+	gpio_set(a, HIGH);
+	gpio_set_mode(b, Output);
+	gpio_set(b, HIGH);
+	gpio_set_mode(c, Output);
+	gpio_set(c, HIGH);
+	gpio_set_mode(d, Output);
+	gpio_set(d, HIGH);
+	gpio_set_mode(e, Output);
+	gpio_set(e, HIGH);
+	gpio_set_mode(f, Output);
+	gpio_set(f, HIGH);
+	gpio_set_mode(g, Output);
+	gpio_set(g, HIGH);
+	gpio_set_mode(enable1, Output);
+	gpio_set(enable1, LOW);
+	gpio_set_mode(enable2, Output);
+	gpio_set(enable2, LOW);
+	gpio_set_mode(enable3, Output);
+	gpio_set(enable3, LOW);	
 }
 
 
@@ -133,7 +147,7 @@ void displayNo9() {
 }
 
 
-void displayNo(int16_t number) {
+void displayNo(int number) {
 	switch (number) {
 		case 0:
 			displayNo0();
@@ -180,7 +194,7 @@ void clearDisplay() {
 }
 
 
-void enableDisplay(int16_t displayNumber) {
+void enableDisplay(int displayNumber) {
 	switch (displayNumber) {
 		case 0:
 			gpio_set(enable1, HIGH);
@@ -195,7 +209,7 @@ void enableDisplay(int16_t displayNumber) {
 }
 
 
-void disableDisplay(int16_t displayNumber) {
+void disableDisplay(int displayNumber) {
 	switch (displayNumber) {
 		case 0:
 			gpio_set(enable1, LOW);
@@ -207,4 +221,15 @@ void disableDisplay(int16_t displayNumber) {
 			gpio_set(enable3, LOW);
 			break;
 	}
+}
+
+
+void displayMinus() {
+	gpio_set(a, HIGH);
+	gpio_set(b, HIGH);
+	gpio_set(c, HIGH);
+	gpio_set(d, HIGH);
+	gpio_set(e, HIGH);
+	gpio_set(f, HIGH);
+	gpio_set(g, LOW);
 }

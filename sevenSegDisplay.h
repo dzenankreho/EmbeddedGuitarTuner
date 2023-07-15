@@ -1,7 +1,6 @@
 #pragma once
 #include "gpio.h"
 
-
 extern Pin a;
 extern Pin b;
 extern Pin c;
@@ -16,6 +15,7 @@ extern Pin enable3;
 
 void init7segDisplays();
 void clearDisplay();
+void displayMinus();
 void displayNo0();
 void displayNo1();
 void displayNo2();
@@ -26,6 +26,6 @@ void displayNo6();
 void displayNo7();
 void displayNo8();
 void displayNo9();
-void displayNo(int16_t number);
-void enableDisplay(int16_t displayNumber);
-void disableDisplay(int16_t displayNumber);
+void displayNo(int number);
+void enableDisplay(int displayNumber);
+void disableDisplay(int displayNumber);
