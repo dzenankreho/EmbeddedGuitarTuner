@@ -8,6 +8,9 @@
 #define VAR_THRESHOLD 1e10f
 #define FREQ_THRESHOLD 30.0f
 
+typedef enum { PLAYING_COMMAND, LISTENING } OperationMode;
+OperationMode operationMode = PLAYING_COMMAND;
+
 float32_t lowerBounds[] = {77.8f, 103.8f, 138.6f, 185.0f, 233.1f, 311.1f};
 float32_t upperBounds[] = {87.3f, 116.5f, 155.6f, 207.7f, 261.6f, 349.2f};
 
@@ -73,25 +76,38 @@ void proces_buffer(void) {
 		rxbuf = dma_rx_buffer_pong;
 	}			 
 		
-	for (i = 0; i < (DMA_BUFFER_SIZE); i++) {
-		audio_IN = (*rxbuf++);
-		audio_chL = (audio_IN & 0x0000FFFF);
-		x[2*i] = (float32_t)(audio_chL);
-		y[cnt] = x[2*i];
-		buffer[2*cnt] = x[2*i];
-		x[2*i+1] = 0.0f;
-		buffer[2*cnt+1] = 0.0f;
-		cnt++;
+	if (operationMode == LISTENING) {
+		for (i = 0; i < (DMA_BUFFER_SIZE); i++) {
+			audio_IN = (*rxbuf++);
+			audio_chL = (audio_IN & 0x0000FFFF);
+			x[2*i] = (float32_t)(audio_chL);
+			y[cnt] = x[2*i];
+			buffer[2*cnt] = x[2*i];
+			x[2*i+1] = 0.0f;
+			buffer[2*cnt+1] = 0.0f;
+			cnt++;
+		}
 	}
 	
-	arm_cfft_f32(&arm_cfft_sR_f32_len128, x, 0, 1);
+	switch (operationMode) {
+		case PLAYING_COMMAND:
+			for (i = 0; i < (DMA_BUFFER_SIZE); i++) {
+				*txbuf++ = ((popustiteZicu[soundCommandCnt] << 16 & 0xFFFF0000)) + (zategniteZicu[soundCommandCnt] & 0x0000FFFF);
+				if (++soundCommandCnt == DURATION) {
+					operationMode = LISTENING;
+					break;
+				}
+			}
+			break;
+			
+		case LISTENING:
+			for (i = 0; i < (DMA_BUFFER_SIZE); i++) {
+				*txbuf++ = 0;	
+			}
+			break;
 		
-	for (i=0 ; i <(DMA_BUFFER_SIZE); i++) {
-		//arm_sqrt_f32(x[2*i] * x[2*i] + x[2*i+1] * x[2*i+1], &out);
-		//buffer[cnt++] = out;
-		//out = ((out > 32767) ? (32767) : (out));
-		//*txbuf++ = (uint32_t)((((short)(out)<<16 & 0xFFFF0000)) + ((short)(out) & 0x0000FFFF));	
-		*txbuf++ = 0;	
+		default:
+			break;
 	}
 	
 	tx_buffer_empty = 0;
@@ -99,18 +115,8 @@ void proces_buffer(void) {
 }
 
 
-void I2S_HANDLER(void) {
-	audio_OUT = ((popustiteZicu[soundCommandCnt] << 16 & 0xFFFF0000)) + (zategniteZicu[soundCommandCnt] & 0x0000FFFF);
-	i2s_tx(audio_OUT);
-	if (++soundCommandCnt == DURATION) {
-		audio_init(hz8000, mic_in, dma, DMA_HANDLER);
-	}
-}
-
-
 int main (void) {
-	int j =0;
-	audio_init(hz8000, mic_in, intr, I2S_HANDLER); while(1);
+	int j = 0;
 #ifdef MEASURE_EXEC_TIME
 	gpio_set_mode(P15, Output);
 #endif
@@ -133,16 +139,16 @@ int main (void) {
 			arm_max_f32(buffer2, BUFFER_SIZE / 2, &max, &maxIndex);
 			freq = (maxIndex / 1024.0f) * 4000.0f;
 			if (mean > MEAN_THRESHOLD && var > VAR_THRESHOLD && freq > 30.0f) {
-				/*for (j = 0; j < 6; j++) {
+				for (j = 0; j < 6; j++) {
 					if ((lowerBounds[j] <= freq && upperBounds[j] >= freq) ||
 						(lowerBounds[j] <= freq / 2 && upperBounds[j] >= freq / 2) ||
 						(lowerBounds[j] <= freq / 3 && upperBounds[j] >= freq / 3) ) {
 							string = j;
 							break;
 						}
-				}*/
+				}
 				soundCommandCnt = 0;
-				audio_init(hz8000, mic_in, intr, I2S_HANDLER); 
+				operationMode = PLAYING_COMMAND;
 			} else {
 				freq = -1;
 				string = -1;
