@@ -9,7 +9,7 @@
 #define FREQ_THRESHOLD 30.0f
 
 typedef enum { PLAYING_COMMAND, LISTENING } OperationMode;
-OperationMode operationMode = PLAYING_COMMAND;
+OperationMode operationMode = LISTENING;
 
 float32_t lowerBounds[] = {77.8f, 103.8f, 138.6f, 185.0f, 233.1f, 311.1f};
 float32_t upperBounds[] = {87.3f, 116.5f, 155.6f, 207.7f, 261.6f, 349.2f};
@@ -141,9 +141,8 @@ int main (void) {
 			if (mean > MEAN_THRESHOLD && var > VAR_THRESHOLD && freq > 30.0f) {
 				for (j = 0; j < 6; j++) {
 					if ((lowerBounds[j] <= freq && upperBounds[j] >= freq) ||
-						(lowerBounds[j] <= freq / 2 && upperBounds[j] >= freq / 2) ||
-						(lowerBounds[j] <= freq / 3 && upperBounds[j] >= freq / 3) ) {
-							string = j;
+						(lowerBounds[j] <= freq / 2 && upperBounds[j] >= freq / 2)) {
+							string = 6 - j;
 							break;
 						}
 				}
