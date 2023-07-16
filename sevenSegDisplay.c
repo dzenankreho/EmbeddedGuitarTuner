@@ -1,4 +1,5 @@
 #include "sevenSegDisplay.h"
+#include "gpio.h"
 
 // 1 2 4 6 7 9 10 3 3'
 Pin a = PF5;
@@ -13,7 +14,7 @@ Pin enable2 = P7D;
 Pin enable3 = PF1;
 
 
-void init7segDisplays() {
+void init7segDisplays(void) {
 	gpio_set_mode(a, Output);
 	gpio_set(a, HIGH);
 	gpio_set_mode(b, Output);
@@ -37,7 +38,7 @@ void init7segDisplays() {
 }
 
 
-void displayNo0() {
+void displayNo0(void) {
 	gpio_set(a, LOW);
 	gpio_set(b, LOW);
 	gpio_set(c, LOW);
@@ -48,7 +49,7 @@ void displayNo0() {
 }
 
 
-void displayNo1() {
+void displayNo1(void) {
 	gpio_set(a, HIGH);
 	gpio_set(b, LOW);
 	gpio_set(c, LOW);
@@ -59,7 +60,7 @@ void displayNo1() {
 }
 
 
-void displayNo2() {
+void displayNo2(void) {
 	gpio_set(a, LOW);
 	gpio_set(b, LOW);
 	gpio_set(c, HIGH);
@@ -70,7 +71,7 @@ void displayNo2() {
 }
 
 
-void displayNo3() {
+void displayNo3(void) {
 	gpio_set(a, LOW);
 	gpio_set(b, LOW);
 	gpio_set(c, LOW);
@@ -81,7 +82,7 @@ void displayNo3() {
 }
 
 
-void displayNo4() {
+void displayNo4(void) {
 	gpio_set(a, HIGH);
 	gpio_set(b, LOW);
 	gpio_set(c, LOW);
@@ -92,7 +93,7 @@ void displayNo4() {
 }
 
 
-void displayNo5() {
+void displayNo5(void) {
 	gpio_set(a, LOW);
 	gpio_set(b, HIGH);
 	gpio_set(c, LOW);
@@ -103,7 +104,7 @@ void displayNo5() {
 }
 
 
-void displayNo6() {
+void displayNo6(void) {
 	gpio_set(a, LOW);
 	gpio_set(b, HIGH);
 	gpio_set(c, LOW);
@@ -114,7 +115,7 @@ void displayNo6() {
 }
 
 
-void displayNo7() {
+void displayNo7(void) {
 	gpio_set(a, LOW);
 	gpio_set(b, LOW);
 	gpio_set(c, LOW);
@@ -125,7 +126,7 @@ void displayNo7() {
 }
 
 
-void displayNo8() {
+void displayNo8(void) {
 	gpio_set(a, LOW);
 	gpio_set(b, LOW);
 	gpio_set(c, LOW);
@@ -136,7 +137,7 @@ void displayNo8() {
 }
 
 
-void displayNo9() {
+void displayNo9(void) {
 	gpio_set(a, LOW);
 	gpio_set(b, LOW);
 	gpio_set(c, LOW);
@@ -183,7 +184,7 @@ void displayNo(int number) {
 }
 
 
-void clearDisplay() {
+void clearDisplay(void) {
 	gpio_set(a, HIGH);
 	gpio_set(b, HIGH);
 	gpio_set(c, HIGH);
@@ -224,7 +225,7 @@ void disableDisplay(int displayNumber) {
 }
 
 
-void displayMinus() {
+void displayMinus(void) {
 	gpio_set(a, HIGH);
 	gpio_set(b, HIGH);
 	gpio_set(c, HIGH);
