@@ -3,6 +3,8 @@
 #include "soundCommands.h"
 #include "sevenSegDisplay.h"
 #include "pushButtons.h"
+#include "tuning.h"
+
 
 #define BUFFER_SIZE 16*DMA_BUFFER_SIZE
 #define MEAN_THRESHOLD 1e4f
@@ -15,10 +17,7 @@
 enum { PLAYING_COMMAND, LISTENING } operationMode = LISTENING;
 typedef enum { AUTO, MANUAL } TunerMode;
 TunerMode tunerMode = AUTO;
-
-float32_t lowerBounds[] = {77.8f, 103.8f, 138.6f, 185.0f, 233.1f, 311.1f};
-float32_t upperBounds[] = {87.3f, 116.5f, 155.6f, 207.7f, 261.6f, 349.2f};
-float32_t tunedStrings[] = {82.4f, 110.0f, 146.8f, 196.0f, 246.9f, 329.6f};
+Tuning* tuning = &standardTuning;
 
 volatile int16_t audio_chR = 0;
 volatile int16_t audio_chL = 0;
@@ -158,11 +157,11 @@ int main (void) {
 						case AUTO:
 							if (tunerMode == AUTO) {
 								for (j = 0; j < 6; j++) {
-									if (lowerBounds[j] <= freq && upperBounds[j] >= freq) {
+									if (tuning->lowerBounds[j] <= freq && tuning->upperBounds[j] >= freq) {
 										string = 6 - j;
 										break;
 									}
-									if (lowerBounds[j] <= freq / 2 && upperBounds[j] >= freq / 2) {
+									if (tuning->lowerBounds[j] <= freq / 2 && tuning->upperBounds[j] >= freq / 2) {
 										freq /= 2;
 										string = 6 - j;
 										break;
@@ -171,11 +170,11 @@ int main (void) {
 							}
 							break;
 						case MANUAL:
-							if (lowerBounds[manualStringCnt] <= freq && upperBounds[manualStringCnt] >= freq) {
+							if (tuning->lowerBounds[manualStringCnt] <= freq && tuning->upperBounds[manualStringCnt] >= freq) {
 								string = 6 - manualStringCnt;
 								break;
 							}
-							if (lowerBounds[manualStringCnt] <= freq / 2 && upperBounds[manualStringCnt] >= freq / 2) {
+							if (tuning->lowerBounds[manualStringCnt] <= freq / 2 && tuning->upperBounds[manualStringCnt] >= freq / 2) {
 								freq /= 2;
 								string = 6 - manualStringCnt;
 								break;
@@ -186,7 +185,7 @@ int main (void) {
 					}
 
 					if (string != -1) {
-						logHelper1 = freq / tunedStrings[((tunerMode == AUTO) ? (j) : (manualStringCnt))];
+						logHelper1 = freq / tuning->tunedStrings[((tunerMode == AUTO) ? (j) : (manualStringCnt))];
 						arm_vlog_f32(&logHelper1, &logHelper2, 1);
 						n = CONST_1200_DIV_LN2 * logHelper2;
 						nScaled = n / 10;
