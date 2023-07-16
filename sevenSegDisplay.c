@@ -149,6 +149,16 @@ void displayNo9(void) {
 
 
 void displayNo(int number) {
+	if (number > 9 || number < -9) {
+		return;
+	}
+	
+	
+	if (number < 0) {
+		number = -number;
+	}
+	
+	
 	switch (number) {
 		case 0:
 			displayNo0();
