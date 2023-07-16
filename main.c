@@ -18,6 +18,7 @@ enum { PLAYING_COMMAND, LISTENING } operationMode = LISTENING;
 typedef enum { AUTO, MANUAL } TunerMode;
 TunerMode tunerMode = AUTO;
 Tuning* tuning = &standardTuning;
+Tuning* tunings[] = {&standardTuning, &dropDTuning, &fullStepDownTuning};
 
 volatile int16_t audio_chR = 0;
 volatile int16_t audio_chL = 0;
@@ -37,6 +38,7 @@ int32_t n = 0, nScaled = 0;
 int16_t* soundCommand = 0;
 int32_t soundCommandDuration  = 0;
 int32_t manualStringCnt = 0;
+int32_t tuningSwitchCnt = 0;
 
 
 void DMA_HANDLER(void) {
@@ -190,10 +192,10 @@ int main (void) {
 						n = CONST_1200_DIV_LN2 * logHelper2;
 						nScaled = n / 10;
 						soundCommandCnt = 0;
-						if (nScaled < 0) {
+						if (nScaled < -tuning->tolerance) {
 							soundCommand = zategniteZicu;
 							soundCommandDuration = ZATEGNITE_ZICU_DURATION;
-						} else if (nScaled > 0) {
+						} else if (nScaled > tuning->tolerance) {
 							soundCommand = popustiteZicu;
 							soundCommandDuration = POPUSTITE_ZICU_DURATION;
 						} else {
@@ -215,6 +217,11 @@ int main (void) {
 		if (!gpio_get(switchString)) {
 			delay_ms(250);
 			manualStringCnt = (manualStringCnt + 1) % 6;
-		}		
+		}	
+		if (!gpio_get(switchTune)) {
+			delay_ms(250);
+			tuningSwitchCnt = (tuningSwitchCnt + 1) % NUMBER_OF_TUNINGS;
+			tuning = tunings[tuningSwitchCnt];
+		}			
 	}
 }
