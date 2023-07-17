@@ -79,16 +79,17 @@ void DMA_HANDLER(void) {
 			break;
 		case 2:
 			disableDisplay(1);
+			enableDisplay(2);
 			if (string != -1) {
-				enableDisplay(2);
 				if (nScaled < 0) {
 					displayMinus();
 				} else {
 					displayPlus();
 				}
 			} else if (tunerMode == MANUAL) {
-				enableDisplay(2);
 				displayNo(6 - manualStringCnt);
+			} else {
+				clearDisplay();
 			}
 			break;
 		default:
@@ -234,14 +235,16 @@ void procesDataBuffer() {
 				soundCommand = zategniteZicu;
 				soundCommandDuration = ZATEGNITE_ZICU_DURATION;
 			} else if (nScaled > tuning->tolerance) {
-				soundCommand = zategniteZicu;//popustiteZicu;
-				soundCommandDuration = ZATEGNITE_ZICU_DURATION;//POPUSTITE_ZICU_DURATION;
+				soundCommand = popustiteZicu;
+				soundCommandDuration = POPUSTITE_ZICU_DURATION;
 			} else {
-				soundCommand = zategniteZicu;//zicaNastimana;
-				soundCommandDuration = ZATEGNITE_ZICU_DURATION;//ZICA_NASTIMANA_DURATION;
+				soundCommand = zicaNastimana;
+				soundCommandDuration = ZICA_NASTIMANA_DURATION;
 			}	
 			operationMode = PLAYING_COMMAND;
 		}
+	} else {
+		string = -1;
 	}
 	
 	
