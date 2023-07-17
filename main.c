@@ -36,7 +36,7 @@ int16_t* soundCommand = 0;
 int32_t soundCommandDuration  = 0;
 int32_t soundCommandCnt = 0;
 
-
+int32_t sevenSegDisplaysCnt = 0;
 
 void DMA_HANDLER(void) {
     if (dstc_state(0)) {
@@ -65,6 +65,38 @@ void DMA_HANDLER(void) {
 		rx_buffer_full = 1;   		
 		dstc_reset(1);
 	}
+	
+	switch (sevenSegDisplaysCnt) {
+		case 0:
+			disableDisplay(2);
+			enableDisplay(0);
+			displayNo(((string != -1) ? (nScaled % 10) : ((int16_t)tunerMode)));
+			break;
+		case 1:
+			disableDisplay(0);
+			enableDisplay(1);
+			displayNo(((string != -1) ? (nScaled / 10) : (tuningSwitchCnt)));
+			break;
+		case 2:
+			disableDisplay(1);
+			if (string != -1) {
+				enableDisplay(2);
+				if (nScaled < 0) {
+					displayMinus();
+				} else {
+					displayPlus();
+				}
+				displayMinus();
+			} else if (tunerMode == MANUAL) {
+				enableDisplay(2);
+				displayNo(6 - manualStringCnt);
+			}
+			break;
+		default:
+			break;
+	}
+	
+	sevenSegDisplaysCnt = (sevenSegDisplaysCnt + 1) % 3;
 }
 
 
@@ -203,11 +235,11 @@ void procesDataBuffer() {
 				soundCommand = zategniteZicu;
 				soundCommandDuration = ZATEGNITE_ZICU_DURATION;
 			} else if (nScaled > tuning->tolerance) {
-				soundCommand = popustiteZicu;
-				soundCommandDuration = POPUSTITE_ZICU_DURATION;
+				soundCommand = zategniteZicu;//popustiteZicu;
+				soundCommandDuration = ZATEGNITE_ZICU_DURATION;//POPUSTITE_ZICU_DURATION;
 			} else {
-				soundCommand = zicaNastimana;
-				soundCommandDuration = ZICA_NASTIMANA_DURATION;
+				soundCommand = zategniteZicu;//zicaNastimana;
+				soundCommandDuration = ZATEGNITE_ZICU_DURATION;//ZICA_NASTIMANA_DURATION;
 			}	
 			operationMode = PLAYING_COMMAND;
 		}
@@ -220,25 +252,8 @@ void procesDataBuffer() {
 
 
 int main (void) {
-	initPushButtons();
+	//initPushButtons();
 	init7segDisplays();
-
-	/*while(1) {
-		enableDisplay(0);
-		displayNo(1);
-		delay_ms(1);
-		disableDisplay(0);
-		
-		enableDisplay(1);
-		displayNo(2);
-		delay_ms(1);
-		disableDisplay(1);
-		
-		enableDisplay(2);
-		displayNo(3);
-		delay_ms(1);
-		disableDisplay(2);
-	}*/
 	
 	audio_init(hz8000, mic_in, dma, DMA_HANDLER);
 
@@ -252,7 +267,7 @@ int main (void) {
 		}
 		
 		
-		if (!gpio_get(switchMode)) {
+		/*if (!gpio_get(switchMode)) {
 			delay_ms(250);
 			tunerMode = ((tunerMode == AUTO) ? (MANUAL) : (AUTO));
 		}
@@ -268,10 +283,19 @@ int main (void) {
 			delay_ms(250);
 			tuningSwitchCnt = (tuningSwitchCnt + 1) % NUMBER_OF_TUNINGS;
 			tuning = tunings[tuningSwitchCnt];
-		}
-
+		}*/
+/*
+		enableDisplay(0);
+		displayNo(1);
+		delay_ms(2);
+		disableDisplay(0);
 		
-		if (string != -1) {
+		enableDisplay(1);
+		displayNo(2);
+		delay_ms(2);
+		disableDisplay(1);
+*/			
+		/*if (string != -1) {
 			enableDisplay(0);
 			displayNo(nScaled % 10);
 			delay_ms(1);
@@ -305,6 +329,6 @@ int main (void) {
 				delay_ms(1);
 				disableDisplay(2);
 			}
-		}
+		}*/
 	}
 }

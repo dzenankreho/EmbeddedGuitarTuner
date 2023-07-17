@@ -3,6 +3,7 @@
 void init7segDisplays(void);
 void clearDisplay(void);
 void displayMinus(void);
+void displayPlus(void);
 void displayNo0(void);
 void displayNo1(void);
 void displayNo2(void);

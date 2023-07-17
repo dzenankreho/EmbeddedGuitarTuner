@@ -244,3 +244,13 @@ void displayMinus(void) {
 	gpio_set(f, LOW);
 	gpio_set(g, HIGH);
 }
+
+void displayPlus(void) {
+	gpio_set(a, HIGH);
+	gpio_set(b, HIGH);
+	gpio_set(c, LOW);
+	gpio_set(d, HIGH);
+	gpio_set(e, HIGH);
+	gpio_set(f, HIGH);
+	gpio_set(g, HIGH);
+}
