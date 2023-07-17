@@ -86,7 +86,6 @@ void DMA_HANDLER(void) {
 				} else {
 					displayPlus();
 				}
-				displayMinus();
 			} else if (tunerMode == MANUAL) {
 				enableDisplay(2);
 				displayNo(6 - manualStringCnt);
@@ -252,7 +251,7 @@ void procesDataBuffer() {
 
 
 int main (void) {
-	//initPushButtons();
+	initPushButtons();
 	init7segDisplays();
 	
 	audio_init(hz8000, mic_in, dma, DMA_HANDLER);
@@ -267,68 +266,23 @@ int main (void) {
 		}
 		
 		
-		/*if (!gpio_get(switchMode)) {
-			delay_ms(250);
+		if (!gpio_get(switchMode)) {
+			delay_ms(300);
 			tunerMode = ((tunerMode == AUTO) ? (MANUAL) : (AUTO));
+			manualStringCnt = 0;
 		}
 		
 		
 		if (!gpio_get(switchString)) {
-			delay_ms(250);
+			delay_ms(300);
 			manualStringCnt = (manualStringCnt + 1) % 6;
 		}	
 		
 		
 		if (!gpio_get(switchTune)) {
-			delay_ms(250);
+			delay_ms(300);
 			tuningSwitchCnt = (tuningSwitchCnt + 1) % NUMBER_OF_TUNINGS;
 			tuning = tunings[tuningSwitchCnt];
-		}*/
-/*
-		enableDisplay(0);
-		displayNo(1);
-		delay_ms(2);
-		disableDisplay(0);
-		
-		enableDisplay(1);
-		displayNo(2);
-		delay_ms(2);
-		disableDisplay(1);
-*/			
-		/*if (string != -1) {
-			enableDisplay(0);
-			displayNo(nScaled % 10);
-			delay_ms(1);
-			disableDisplay(0);
-			
-			enableDisplay(1);
-			displayNo(nScaled / 10);
-			delay_ms(1);
-			disableDisplay(1);
-			
-			if (nScaled < 0) {
-				enableDisplay(2);
-				displayMinus();
-				delay_ms(1);
-				disableDisplay(2);
-			}
-		} else {
-			enableDisplay(0);
-			displayNo((int16_t)tunerMode);
-			delay_ms(1);
-			disableDisplay(0);
-			
-			enableDisplay(1);
-			displayNo(tuningSwitchCnt);
-			delay_ms(1);
-			disableDisplay(1);
-			
-			if (tunerMode == MANUAL) {
-				enableDisplay(2);
-				displayNo(6 - manualStringCnt);
-				delay_ms(1);
-				disableDisplay(2);
-			}
-		}*/
+		}
 	}
 }
