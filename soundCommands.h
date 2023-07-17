@@ -1,4 +1,5 @@
 #pragma once
+#include "arm_math_types.h"
 
 
 #define ZATEGNITE_ZICU_DURATION 20651
@@ -3450,6 +3451,7 @@ int16_t zategniteZicu[ZATEGNITE_ZICU_DURATION] = {
 0,0,0,0,0,0,
 0,0,0,0,0
 };
+
 
 int16_t popustiteZicu[POPUSTITE_ZICU_DURATION] = { 
 0,0,0,0,0,0,
@@ -7013,6 +7015,7 @@ int16_t popustiteZicu[POPUSTITE_ZICU_DURATION] = {
 0,0,0,0,0,0,
 0,0,0,0,0
 };
+
 
 int16_t zicaNastimana[ZICA_NASTIMANA_DURATION] = { 
 0,0,0,0,0,0,

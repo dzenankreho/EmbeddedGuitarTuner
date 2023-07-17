@@ -14,7 +14,6 @@
 #define CONST_1200_DIV_LN2 1731.23404907f
 
 
-
 enum { PLAYING_COMMAND, LISTENING } operationMode = LISTENING;
 
 enum { AUTO, MANUAL } tunerMode = AUTO;
@@ -222,7 +221,25 @@ void procesDataBuffer() {
 
 int main (void) {
 	initPushButtons();
-	//init7segDisplays();
+	init7segDisplays();
+
+	/*while(1) {
+		enableDisplay(0);
+		displayNo(1);
+		delay_ms(1);
+		disableDisplay(0);
+		
+		enableDisplay(1);
+		displayNo(2);
+		delay_ms(1);
+		disableDisplay(1);
+		
+		enableDisplay(2);
+		displayNo(3);
+		delay_ms(1);
+		disableDisplay(2);
+	}*/
+	
 	audio_init(hz8000, mic_in, dma, DMA_HANDLER);
 
 	while (1) {
@@ -253,7 +270,7 @@ int main (void) {
 			tuning = tunings[tuningSwitchCnt];
 		}
 
-		/*
+		
 		if (string != -1) {
 			enableDisplay(0);
 			displayNo(nScaled % 10);
@@ -271,6 +288,23 @@ int main (void) {
 				delay_ms(1);
 				disableDisplay(2);
 			}
-		}*/
+		} else {
+			enableDisplay(0);
+			displayNo((int16_t)tunerMode);
+			delay_ms(1);
+			disableDisplay(0);
+			
+			enableDisplay(1);
+			displayNo(tuningSwitchCnt);
+			delay_ms(1);
+			disableDisplay(1);
+			
+			if (tunerMode == MANUAL) {
+				enableDisplay(2);
+				displayNo(6 - manualStringCnt);
+				delay_ms(1);
+				disableDisplay(2);
+			}
+		}
 	}
 }
