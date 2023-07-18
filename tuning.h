@@ -2,7 +2,9 @@
 #include "arm_math_types.h"
 
 
+
 #define NUMBER_OF_TUNINGS 3
+
 
 
 typedef struct {
@@ -13,6 +15,7 @@ typedef struct {
 } Tuning;
 
 
+
 Tuning standardTuning = {
 	{77.8f, 103.8f, 138.6f, 185.0f, 233.1f, 311.1f},
 	{87.3f, 116.5f, 155.6f, 207.7f, 261.6f, 349.2f},
@@ -21,12 +24,14 @@ Tuning standardTuning = {
 };
 
 
+
 Tuning dropDTuning = {
 	{69.3f, 103.8f, 138.6f, 185.0f, 233.1f, 311.1f},
 	{77.8f, 116.5f, 155.6f, 207.7f, 261.6f, 349.2f},
 	{73.4f, 110.0f, 146.8f, 196.0f, 246.9f, 329.6f},
 	1
 };
+
 
 
 Tuning fullStepDownTuning = {

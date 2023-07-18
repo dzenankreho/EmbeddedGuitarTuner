@@ -2,9 +2,11 @@
 #include "arm_math_types.h"
 
 
+
 #define ZATEGNITE_ZICU_DURATION 12094
 #define POPUSTITE_ZICU_DURATION 10898
 #define ZICA_NASTIMANA_DURATION 22187
+
 
 
 int16_t zategniteZicu[ZATEGNITE_ZICU_DURATION] = { 
@@ -2027,6 +2029,7 @@ int16_t zategniteZicu[ZATEGNITE_ZICU_DURATION] = {
 };
 
 
+
 int16_t popustiteZicu[POPUSTITE_ZICU_DURATION] = { 
 16,6,35,133,258,330,
 331,329,311,174,32,-2,
@@ -3846,6 +3849,7 @@ int16_t popustiteZicu[POPUSTITE_ZICU_DURATION] = {
 14,20,28,31,35,36,
 31,31
 };
+
 
 
 int16_t zicaNastimana[ZICA_NASTIMANA_DURATION] = { 

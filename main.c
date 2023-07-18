@@ -14,6 +14,7 @@
 #define CONST_1200_DIV_LN2 1731.23404907f
 
 
+
 enum { PLAYING_COMMAND, LISTENING } operationMode = LISTENING;
 
 enum { AUTO, MANUAL } tunerMode = AUTO;
@@ -37,6 +38,8 @@ int32_t soundCommandDuration  = 0;
 int32_t soundCommandCnt = 0;
 
 int32_t sevenSegDisplaysCnt = 0;
+
+
 
 void DMA_HANDLER(void) {
     if (dstc_state(0)) {
@@ -66,6 +69,8 @@ void DMA_HANDLER(void) {
 		dstc_reset(1);
 	}
 	
+
+	// Set digits on seven segment displays
 	switch (sevenSegDisplaysCnt) {
 		case 0:
 			disableDisplay(2);
@@ -135,11 +140,15 @@ void procesDMAbuffer(void) {
 		case PLAYING_COMMAND:
 			// Send voice message 
 			for (i = 0; i < (DMA_BUFFER_SIZE); i++) {
-				*txbuf++ = ((soundCommand[soundCommandCnt] << 16 & 0xFFFF0000)) + (soundCommand[soundCommandCnt] & 0x0000FFFF);
-				if (++soundCommandCnt == soundCommandDuration) {
-					operationMode = LISTENING;
-					break;
-				}
+				if (operationMode != LISTENING) {
+					*txbuf++ = ((soundCommand[soundCommandCnt] << 16 & 0xFFFF0000)) + (soundCommand[soundCommandCnt] & 0x0000FFFF);
+					if (++soundCommandCnt == soundCommandDuration) {
+						operationMode = LISTENING;
+					}
+				} else {
+					*txbuf++ = 0;
+				}	
+
 			}
 			break;
 			
@@ -185,7 +194,6 @@ void procesDataBuffer() {
 	freq = (maxIndex / 1024.0f) * 4000.0f;
 	
 	
-	
 	if (mean > MEAN_THRESHOLD && var > VAR_THRESHOLD && freq > FREQ_THRESHOLD) {
 		switch (tunerMode) {
 			case AUTO:
@@ -228,59 +236,61 @@ void procesDataBuffer() {
 			n = CONST_1200_DIV_LN2 * logHelper2;
 			nScaled = n / 10;
 			
-			
-			// Choose appropriate message
-			soundCommandCnt = 0;
-			if (nScaled < -tuning->tolerance) {
-				soundCommand = zategniteZicu;
-				soundCommandDuration = ZATEGNITE_ZICU_DURATION;
-			} else if (nScaled > tuning->tolerance) {
-				soundCommand = popustiteZicu;
-				soundCommandDuration = POPUSTITE_ZICU_DURATION;
+			if (!(nScaled > 10 || nScaled < -10)) {
+				// Choose appropriate message
+				soundCommandCnt = 0;
+				if (nScaled < -tuning->tolerance) {
+					soundCommand = zategniteZicu;
+					soundCommandDuration = ZATEGNITE_ZICU_DURATION;
+				} else if (nScaled > tuning->tolerance) {
+					soundCommand = popustiteZicu;
+					soundCommandDuration = POPUSTITE_ZICU_DURATION;
+				} else {
+					soundCommand = zicaNastimana;
+					soundCommandDuration = ZICA_NASTIMANA_DURATION;
+				}	
+				operationMode = PLAYING_COMMAND;
 			} else {
-				soundCommand = zicaNastimana;
-				soundCommandDuration = ZICA_NASTIMANA_DURATION;
-			}	
-			operationMode = PLAYING_COMMAND;
+				string = -1;
+			}
+
 		}
 	} else {
 		string = -1;
 	}
-	
-	
-	cnt = 0;
 }
 
 
 
 int main (void) {
+	// Initialization
 	initPushButtons();
 	init7segDisplays();
-	
 	audio_init(hz8000, mic_in, dma, DMA_HANDLER);
 
+	
 	while (1) {
 		if (rx_buffer_full && tx_buffer_empty) {
 			procesDMAbuffer();
 		
 			if (cnt == BUFFER_SIZE) {
-				procesDataBuffer();
+				procesDataBuffer();	
+				cnt = 0;
 			}
 		}
 		
 		
+		// Check switch states
 		if (!gpio_get(switchMode)) {
 			delay_ms(300);
 			tunerMode = ((tunerMode == AUTO) ? (MANUAL) : (AUTO));
 			manualStringCnt = 0;
 		}
 		
-		
 		if (!gpio_get(switchString)) {
 			delay_ms(300);
 			manualStringCnt = (manualStringCnt + 1) % 6;
 		}	
-		
 		
 		if (!gpio_get(switchTune)) {
 			delay_ms(300);

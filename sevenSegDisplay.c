@@ -1,7 +1,8 @@
 #include "sevenSegDisplay.h"
 #include "gpio.h"
 
-// 1 2 4 6 7 9 10 3 3'
+
+
 Pin a = PF5;
 Pin b = P43;
 Pin c = PF7;
@@ -12,6 +13,7 @@ Pin g = P45;
 Pin enable1 = PF3;
 Pin enable2 = P7D;
 Pin enable3 = PF1;
+
 
 
 void init7segDisplays(void) {
@@ -38,6 +40,7 @@ void init7segDisplays(void) {
 }
 
 
+
 void displayNo0(void) {
 	gpio_set(a, HIGH);
 	gpio_set(b, HIGH);
@@ -47,6 +50,7 @@ void displayNo0(void) {
 	gpio_set(f, HIGH);
 	gpio_set(g, LOW);
 }
+
 
 
 void displayNo1(void) {
@@ -60,6 +64,7 @@ void displayNo1(void) {
 }
 
 
+
 void displayNo2(void) {
 	gpio_set(a, HIGH);
 	gpio_set(b, HIGH);
@@ -69,6 +74,7 @@ void displayNo2(void) {
 	gpio_set(f, LOW);
 	gpio_set(g, HIGH);
 }
+
 
 
 void displayNo3(void) {
@@ -82,6 +88,7 @@ void displayNo3(void) {
 }
 
 
+
 void displayNo4(void) {
 	gpio_set(a, LOW);
 	gpio_set(b, HIGH);
@@ -91,6 +98,7 @@ void displayNo4(void) {
 	gpio_set(f, HIGH);
 	gpio_set(g, HIGH);
 }
+
 
 
 void displayNo5(void) {
@@ -104,6 +112,7 @@ void displayNo5(void) {
 }
 
 
+
 void displayNo6(void) {
 	gpio_set(a, HIGH);
 	gpio_set(b, LOW);
@@ -113,6 +122,7 @@ void displayNo6(void) {
 	gpio_set(f, HIGH);
 	gpio_set(g, HIGH);
 }
+
 
 
 void displayNo7(void) {
@@ -126,6 +136,7 @@ void displayNo7(void) {
 }
 
 
+
 void displayNo8(void) {
 	gpio_set(a, HIGH);
 	gpio_set(b, HIGH);
@@ -137,6 +148,7 @@ void displayNo8(void) {
 }
 
 
+
 void displayNo9(void) {
 	gpio_set(a, HIGH);
 	gpio_set(b, HIGH);
@@ -146,6 +158,7 @@ void displayNo9(void) {
 	gpio_set(f, HIGH);
 	gpio_set(g, HIGH);
 }
+
 
 
 void displayNo(int number) {
@@ -194,6 +207,7 @@ void displayNo(int number) {
 }
 
 
+
 void clearDisplay(void) {
 	gpio_set(a, LOW);
 	gpio_set(b, LOW);
@@ -203,6 +217,7 @@ void clearDisplay(void) {
 	gpio_set(f, LOW);
 	gpio_set(g, LOW);
 }
+
 
 
 void enableDisplay(int displayNumber) {
@@ -220,6 +235,7 @@ void enableDisplay(int displayNumber) {
 }
 
 
+
 void disableDisplay(int displayNumber) {
 	switch (displayNumber) {
 		case 0:
@@ -235,6 +251,7 @@ void disableDisplay(int displayNumber) {
 }
 
 
+
 void displayMinus(void) {
 	gpio_set(a, LOW);
 	gpio_set(b, LOW);
@@ -244,6 +261,8 @@ void displayMinus(void) {
 	gpio_set(f, LOW);
 	gpio_set(g, HIGH);
 }
+
+
 
 void displayPlus(void) {
 	gpio_set(a, HIGH);

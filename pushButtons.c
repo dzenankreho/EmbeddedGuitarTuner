@@ -1,9 +1,11 @@
 #include "pushButtons.h"
 
 
+
 Pin switchMode = PF0;
 Pin switchString = P41;
 Pin switchTune = P40;
+
 
 
 void initPushButtons(void) {
